@@ -1,0 +1,25 @@
+# Rebecca M Joseph, Mohammad Movahedi, William G Dixon, Deborah P M Symmons, 2024.
+
+import sys, csv, re
+
+codes = [{"code":"122.4","system":"icd9"},{"code":"122","system":"icd9"},{"code":"122.2","system":"icd9"},{"code":"122.6","system":"icd9"},{"code":"122.3","system":"icd9"},{"code":"122.1","system":"icd9"},{"code":"122.5","system":"icd9"},{"code":"A16.4","system":"icd9"},{"code":"A15.5","system":"icd9"}];
+REQUIRED_CODES = 1;
+with open(sys.argv[1], 'r') as file_in, open('respiratory-tract-infection-potential-cases.csv', 'w', newline='') as file_out:
+    csv_reader = csv.DictReader(file_in)
+    csv_writer = csv.DictWriter(file_out, csv_reader.fieldnames + ["respiratory-tract-infection-trachea---secondary-identified"])
+    csv_writer.writeheader();
+    codes_identified = 0;
+    for row in csv_reader:
+        newRow = row.copy();
+        for cell in row:
+            # Iterate cell lists (e.g. codes)
+            for item in re.findall(r'\(([^,]*)\,', row[cell]):
+                if(item in list(map(lambda code: code['code'], codes))): codes_identified+=1;
+                if(codes_identified>=REQUIRED_CODES):
+                    newRow["respiratory-tract-infection-trachea---secondary-identified"] = "CASE";
+                    break;
+            if(codes_identified>=REQUIRED_CODES): break;
+        if(codes_identified<REQUIRED_CODES):
+            newRow["respiratory-tract-infection-trachea---secondary-identified"] = "UNK";
+        codes_identified=0;
+        csv_writer.writerow(newRow)
